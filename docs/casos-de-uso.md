@@ -5,7 +5,7 @@
 | Ator | Descrição |
 |------|-----------|
 | **Visitante** | Usuário não autenticado, com acesso limitado (somente consulta). |
-| **Usuário (Skatista)** | Usuário autenticado, principal ator do sistema. Consulta agenda, mapeia pistas, avalia e interage. |
+| **Usuário** | Usuário autenticado, principal ator do sistema. Consulta agenda, mapeia pistas, avalia e interage. |
 | **Administrador** | Usuário com permissão total, incluindo moderação de conteúdo (pistas, avaliações, eventos). |
 | **Provedor de Autenticação Externo** | Ator externo (Google, Apple, etc.) responsável por autenticar o usuário. |
 | **Sistema de Notificação** | Ator de suporte (interno) responsável pelo envio de e-mails/push. |
@@ -93,10 +93,10 @@
 
 ### UC05 — Cadastrar evento
 
-- **Ator principal:** Organizador
-- **Pré-condição:** Organizador autenticado e com permissão.
+- **Ator principal:** Administrador
+- **Pré-condição:** Administrador autenticado e com permissão.
 - **Fluxo principal:**
-  1. Organizador acessa "Novo Evento".
+  1. Administrador acessa "Novo Evento".
   2. Preenche nome, data, local, descrição, tipo/modalidade.
   3. Submete o formulário.
   4. Sistema valida os dados e persiste o novo evento.
@@ -108,7 +108,7 @@
 
 ### UC06 — Editar/Remover evento
 
-- **Ator principal:** Organizador (dono do evento) ou Administrador
+- **Ator principal:** Administrador
 - **Pré-condição:** Evento previamente cadastrado (UC05).
 - **Fluxo principal:**
   1. Ator seleciona o evento a ser editado/removido.
@@ -126,7 +126,7 @@
 - **Pré-condição:** Usuário autenticado; evento existente.
 - **Fluxo principal:**
   1. Usuário acessa detalhes de um evento.
-  2. Usuário seleciona "Tenho interesse / Vou participar".
+  2. Usuário seleciona "Tenho interesse".
   3. Sistema associa o usuário ao evento.
   4. Sistema agenda notificações futuras para esse evento (inclui UC08).
 - **Pós-condição:** Interesse registrado; usuário passa a receber lembretes.
@@ -136,8 +136,8 @@
 ### UC08 — Receber notificação de evento
 
 - **Ator principal:** Sistema de Notificação
-- **Ator secundário:** Usuário (destinatário)
-- **Relação:** *Include* de UC07 / disparado por job agendado.
+- **Ator secundário:** Usuário
+- **Relação:** incluso de UC07
 - **Fluxo principal:**
   1. Sistema verifica periodicamente eventos próximos com usuários interessados.
   2. Para cada usuário interessado, sistema dispara e-mail e/ou notificação push.
@@ -177,7 +177,7 @@
 - **Pré-condição:** Usuário autenticado.
 - **Fluxo principal:**
   1. Usuário seleciona "Cadastrar nova pista".
-  2. Informa nome, endereço/coordenadas, tipo de pista, estrutura disponível.
+  2. Informa nome, endereço, tipo de pista, estrutura disponível.
   3. Opcionalmente anexa fotos (inclui UC13).
   4. Sistema valida e persiste a nova pista.
   5. Sistema registra a operação no log (RF07).
@@ -245,15 +245,3 @@
 - **Pós-condição:** Conteúdo moderado; integridade da plataforma mantida.
 
 ---
-
-## 4. Relações entre Casos de Uso
-
-| Relação | Descrição |
-|---------|-----------|
-| UC07 **include** UC08 | Marcar interesse em evento dispara o agendamento de notificações. |
-| UC11 **extend** UC13 | Cadastro de pista pode opcionalmente incluir envio de fotos. |
-| UC12 **include** UC14 | Avaliação ocorre a partir da tela de detalhes da pista. |
-| UC05, UC06 **generalização** | Organizador herda as permissões de Usuário; Administrador herda as permissões de Organizador. |
-
----
-

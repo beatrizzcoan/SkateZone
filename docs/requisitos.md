@@ -1,5 +1,5 @@
 
-## Requisitos Funcionais (RF)
+# Requisitos Funcionais (RF)
 
 | ID | Descrição |
 |----|-----------|
@@ -46,7 +46,7 @@
 
 <br>
 
-## Requisitos Não Funcionais (RNF)
+# Requisitos Não Funcionais (RNF)
 
 | ID | Descrição |
 |----|-----------|
