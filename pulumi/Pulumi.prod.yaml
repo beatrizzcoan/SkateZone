@@ -1,0 +1,6 @@
+config: 
+
+aws:zoneId: Z08495123KE7P30ERBKKH
+aws:roleArn: arn:aws:iam::789223369510:role/route53-rr-role
+aws:externalId: 8d53a082860ee56e74e626ce29e3e75b
+aws:region: sa-east-1
