@@ -1,0 +1,12 @@
+services:
+  dynamodb:
+    image: amazon/dynamodb-local
+    container_name: dynamodb
+    command: ["-jar", "DynamoDBLocal.jar", "-sharedDb", "-inMemory"]
+    ports:
+      - "8000:8000"
+    networks: [sam-local]
+
+networks:
+  sam-local:
+    name: sam-local # fixed name so SAM can attach with --docker-network sam-local
