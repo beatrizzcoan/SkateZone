@@ -1,0 +1,28 @@
+Parameters:
+  DYNAMODB_ENDPOINT:
+    Type: String
+    Default: ""
+
+Resources:
+  LoginFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: login/
+      Handler: app.handler
+      Runtime: nodejs24.x
+      FunctionUrlConfig:
+        AuthType: NONE
+        Cors:
+          AllowOrigins:
+            - "*"
+          AllowHeaders:
+            - "Content-Type"
+            - "Authorization"
+          AllowMethods:
+            - "POST"
+            - "OPTIONS"
+      Environment:
+        Variables:
+          TABLE_NAME: users
+          DYNAMODB_ENDPOINT: !Ref DYNAMODB_ENDPOINT
+          AWS_REGION: sa-east-1
