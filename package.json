@@ -1,0 +1,14 @@
+{
+  "name": "skatezone-login-lambda",
+  "version": "1.0.0",
+  "description": "Função Serverless AWS Lambda para login com DynamoDB",
+  "main": "src/login.js",
+  "scripts": {
+    "test:local": "node test-local.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1152.0",
+    "@aws-sdk/lib-dynamodb": "^3.1152.0",
+    "dotenv": "^16.4.5"
+  }
+}

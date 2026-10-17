@@ -1,0 +1,44 @@
+# Dependências Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# Python e Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+
+# AWS SAM (Builds locais gerados automaticamente)
+.aws-sam/
+
+# Arquivos de Ambiente e Segredos (nunca versionar credenciais)
+.env
+.env.local
+.env.*.local
+*.pem
+
+# Configurações de IDE e Editores
+.vscode/*
+!.vscode/settings.json
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Logs e Arquivos Temporários
+logs/
+*.log
+*.zip
+*.tar.gz
+
+# Arquivos do Sistema Operacional
+.DS_Store
+Thumbs.db
+Desktop.ini
