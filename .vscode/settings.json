@@ -1,3 +1,23 @@
 {
-    "python.REPL.enableREPLSmartSend": false
+    "python.REPL.enableREPLSmartSend": false,
+    "yaml.customTags": [
+        "!Ref scalar",
+        "!Sub scalar",
+        "!GetAtt scalar",
+        "!GetAZs scalar",
+        "!Join sequence",
+        "!ImportValue scalar",
+        "!If sequence",
+        "!Equals sequence",
+        "!Not sequence",
+        "!And sequence",
+        "!Or sequence",
+        "!Condition scalar",
+        "!FindInMap sequence",
+        "!Select sequence",
+        "!Split sequence",
+        "!Cidr sequence",
+        "!Transform scalar"
+    ],
+    "yaml.validate": true
 }
