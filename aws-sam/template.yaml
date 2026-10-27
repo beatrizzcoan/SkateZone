@@ -3,7 +3,23 @@ Parameters:
     Type: String
     Default: ""
 
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 256
+    Runtime: python3.11
+    Architectures:
+      - x86_64
+    Environment:
+      Variables:
+        DYNAMODB_ENDPOINT: !Ref DYNAMODB_ENDPOINT
+        AWS_REGION: sa-east-1
+
 Resources:
+
+  # =========================================================================
+  # UC01 — Autenticar-se no sistema
+  # =========================================================================
   LoginFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -24,5 +40,377 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME: users
-          DYNAMODB_ENDPOINT: !Ref DYNAMODB_ENDPOINT
-          AWS_REGION: sa-east-1
+
+  # =========================================================================
+  # UC02 — Gerenciar perfil
+  # =========================================================================
+  GetProfileFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: get_profile/
+      Handler: app.lambda_handler
+      FunctionUrlConfig:
+        AuthType: NONE
+        Cors:
+          AllowOrigins:
+            - "*"
+          AllowHeaders:
+            - "Content-Type"
+            - "Authorization"
+          AllowMethods:
+            - "GET"
+            - "OPTIONS"
+      Environment:
+        Variables:
+          TABLE_NAME: users
+
+  UpdateProfileFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: post_profile/
+      Handler: app.lambda_handler
+      FunctionUrlConfig:
+        AuthType: NONE
+        Cors:
+          AllowOrigins:
+            - "*"
+          AllowHeaders:
+            - "Content-Type"
+            - "Authorization"
+          AllowMethods:
+            - "POST"
+            - "OPTIONS"
+      Environment:
+        Variables:
+          TABLE_NAME: users
+
+  # =========================================================================
+  # UC03 e UC04 — Consultar e filtrar agenda
+  # =========================================================================
+  GetEventsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: get_events/
+      Handler: app.lambda_handler
+      FunctionUrlConfig:
+        AuthType: NONE
+        Cors:
+          AllowOrigins:
+            - "*"
+          AllowHeaders:
+            - "Content-Type"
+            - "Authorization"
+          AllowMethods:
+            - "GET"
+            - "OPTIONS"
+      Environment:
+        Variables:
+          TABLE_NAME: events
+
+  # =========================================================================
+  # UC05 — Cadastrar evento
+  # =========================================================================
+  CreateEventFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: post_event/
+      Handler: app.lambda_handler
+      FunctionUrlConfig:
+        AuthType: NONE
+        Cors:
+          AllowOrigins:
+            - "*"
+          AllowHeaders:
+            - "Content-Type"
+            - "Authorization"
+          AllowMethods:
+            - "POST"
+            - "OPTIONS"
+      Environment:
+        Variables:
+          TABLE_NAME: events
+
+  # =========================================================================
+  # UC06 — Editar / Remover evento
+  # =========================================================================
+  UpdateEventFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: put_event/
+      Handler: app.lambda_handler
+      FunctionUrlConfig:
+        AuthType: NONE
+        Cors:
+          AllowOrigins:
+            - "*"
+          AllowHeaders:
+            - "Content-Type"
+            - "Authorization"
+          AllowMethods:
+            - "PUT"
+            - "OPTIONS"
+      Environment:
+        Variables:
+          TABLE_NAME: events
+
+  DeleteEventFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: delete_event/
+      Handler: app.lambda_handler
+      FunctionUrlConfig:
+        AuthType: NONE
+        Cors:
+          AllowOrigins:
+            - "*"
+          AllowHeaders:
+            - "Content-Type"
+            - "Authorization"
+          AllowMethods:
+            - "DELETE"
+            - "OPTIONS"
+      Environment:
+        Variables:
+          TABLE_NAME: events
+
+  # =========================================================================
+  # UC07 — Marcar interesse em evento
+  # =========================================================================
+  ToggleEventInterestFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: post_event_interest/
+      Handler: app.lambda_handler
+      FunctionUrlConfig:
+        AuthType: NONE
+        Cors:
+          AllowOrigins:
+            - "*"
+          AllowHeaders:
+            - "Content-Type"
+            - "Authorization"
+          AllowMethods:
+            - "POST"
+            - "OPTIONS"
+      Environment:
+        Variables:
+          TABLE_NAME: event_interests
+
+  # =========================================================================
+  # UC08 — Receber notificação de evento (Agendamento Cron)
+  # =========================================================================
+  SendNotificationsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: send_notifications/
+      Handler: app.lambda_handler
+      Events:
+        CronSchedule:
+          Type: Schedule
+          Properties:
+            Schedule: rate(1 hour)
+            Enabled: true
+      Environment:
+        Variables:
+          TABLE_NAME: notifications
+
+  # =========================================================================
+  # UC09 e UC10 — Visualizar mapa e buscar pistas próximas
+  # =========================================================================
+  GetTracksFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: get_tracks/
+      Handler: app.lambda_handler
+      FunctionUrlConfig:
+        AuthType: NONE
+        Cors:
+          AllowOrigins:
+            - "*"
+          AllowHeaders:
+            - "Content-Type"
+            - "Authorization"
+          AllowMethods:
+            - "GET"
+            - "OPTIONS"
+      Environment:
+        Variables:
+          TABLE_NAME: tracks
+
+  GetNearbyTracksFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: get_nearby_tracks/
+      Handler: app.lambda_handler
+      FunctionUrlConfig:
+        AuthType: NONE
+        Cors:
+          AllowOrigins:
+            - "*"
+          AllowHeaders:
+            - "Content-Type"
+            - "Authorization"
+          AllowMethods:
+            - "GET"
+            - "OPTIONS"
+      Environment:
+        Variables:
+          TABLE_NAME: tracks
+
+  # =========================================================================
+  # UC11 — Cadastrar pista
+  # =========================================================================
+  CreateTrackFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: post_track/
+      Handler: app.lambda_handler
+      FunctionUrlConfig:
+        AuthType: NONE
+        Cors:
+          AllowOrigins:
+            - "*"
+          AllowHeaders:
+            - "Content-Type"
+            - "Authorization"
+          AllowMethods:
+            - "POST"
+            - "OPTIONS"
+      Environment:
+        Variables:
+          TABLE_NAME: tracks
+
+  # =========================================================================
+  # UC12 — Avaliar pista
+  # =========================================================================
+  RateTrackFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: post_track_rating/
+      Handler: app.lambda_handler
+      FunctionUrlConfig:
+        AuthType: NONE
+        Cors:
+          AllowOrigins:
+            - "*"
+          AllowHeaders:
+            - "Content-Type"
+            - "Authorization"
+          AllowMethods:
+            - "POST"
+            - "OPTIONS"
+      Environment:
+        Variables:
+          TABLE_NAME: track_ratings
+
+  # =========================================================================
+  # UC13 — Enviar foto da pista
+  # =========================================================================
+  UploadTrackPhotoFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: post_track_photo/
+      Handler: app.lambda_handler
+      FunctionUrlConfig:
+        AuthType: NONE
+        Cors:
+          AllowOrigins:
+            - "*"
+          AllowHeaders:
+            - "Content-Type"
+            - "Authorization"
+          AllowMethods:
+            - "POST"
+            - "OPTIONS"
+      Environment:
+        Variables:
+          TABLE_NAME: track_photos
+
+  # =========================================================================
+  # UC14 — Visualizar detalhes da pista
+  # =========================================================================
+  GetTrackDetailsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: get_track_details/
+      Handler: app.lambda_handler
+      FunctionUrlConfig:
+        AuthType: NONE
+        Cors:
+          AllowOrigins:
+            - "*"
+          AllowHeaders:
+            - "Content-Type"
+            - "Authorization"
+          AllowMethods:
+            - "GET"
+            - "OPTIONS"
+      Environment:
+        Variables:
+          TABLE_NAME: tracks
+
+  # =========================================================================
+  # UC15 — Visualizar histórico pessoal
+  # =========================================================================
+  GetUserHistoryFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: get_user_history/
+      Handler: app.lambda_handler
+      FunctionUrlConfig:
+        AuthType: NONE
+        Cors:
+          AllowOrigins:
+            - "*"
+          AllowHeaders:
+            - "Content-Type"
+            - "Authorization"
+          AllowMethods:
+            - "GET"
+            - "OPTIONS"
+      Environment:
+        Variables:
+          TABLE_NAME: users
+
+  # =========================================================================
+  # UC16 — Moderar conteúdo
+  # =========================================================================
+  GetModerationItemsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: get_admin_moderation/
+      Handler: app.lambda_handler
+      FunctionUrlConfig:
+        AuthType: NONE
+        Cors:
+          AllowOrigins:
+            - "*"
+          AllowHeaders:
+            - "Content-Type"
+            - "Authorization"
+          AllowMethods:
+            - "GET"
+            - "OPTIONS"
+      Environment:
+        Variables:
+          TABLE_NAME: moderation
+
+  ModerateContentFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: post_admin_moderation/
+      Handler: app.lambda_handler
+      FunctionUrlConfig:
+        AuthType: NONE
+        Cors:
+          AllowOrigins:
+            - "*"
+          AllowHeaders:
+            - "Content-Type"
+            - "Authorization"
+          AllowMethods:
+            - "POST"
+            - "OPTIONS"
+      Environment:
+        Variables:
+          TABLE_NAME: moderation
