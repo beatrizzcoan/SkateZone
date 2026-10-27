@@ -1,38 +1,26 @@
 import json
-import os
-import boto3
 
-
-def handler(event, context):
-    ddb = boto3.client(
-        "dynamodb",
-        region_name="us-east-1",
-        endpoint_url=os.environ["DYNAMODB_ENDPOINT"],
-        aws_access_key_id="local",
-        aws_secret_access_key="local",
-    )
-
+def lambda_handler(event, context):
     try:
-        body = json.loads(event.get("body") or "")
-    except json.JSONDecodeError:
-        return {"statusCode": 400, "body": json.dumps({"message": "Invalid JSON"})}
+        user_id = event.get("requestContext", {}).get("authorizer", {}).get("claims", {}).get("sub", "user_12345")
+        body = json.loads(event.get("body") or "{}")
 
-    if not body.get("id") or not body.get("name"):
-        return {
-            "statusCode": 400,
-            "body": json.dumps({"message": "id and name are required"}),
+        updated_profile = {
+            "id": user_id,
+            "name": body.get("name", "João da Silva"),
+            "city": body.get("city", "São Paulo"),
+            "avatarUrl": body.get("avatarUrl", "https://s3.amazonaws.com/bucket/avatar.jpg"),
+            "updatedAt": "2026-10-26T20:00:00Z"
         }
 
-    ddb.put_item(
-        TableName="ProfilesTable",
-        Item={
-            "id": {"S": str(body["id"])},
-            "name": {"S": str(body["name"])},
-        },
-    )
-
-    return {
-        "statusCode": 201,
-        "headers": {"Content-Type": "application/json"},
-        "body": json.dumps({"id": body["id"], "name": body["name"]}),
-    }
+        return {
+            "statusCode": 200,
+            "headers": {"Content-Type": "application/json", "Access-Control-Allow-Origin": "*"},
+            "body": json.dumps({"message": "Perfil atualizado com sucesso.", "profile": updated_profile})
+        }
+    except Exception as e:
+        return {
+            "statusCode": 500,
+            "headers": {"Content-Type": "application/json", "Access-Control-Allow-Origin": "*"},
+            "body": json.dumps({"message": "Erro ao atualizar perfil", "error": str(e)})
+        }

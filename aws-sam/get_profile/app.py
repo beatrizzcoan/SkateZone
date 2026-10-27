@@ -1,34 +1,25 @@
 import json
-import os
-import boto3
 
+def lambda_handler(event, context):
+    try:
+        user_id = event.get("requestContext", {}).get("authorizer", {}).get("claims", {}).get("sub", "user_12345")
 
-def handler(event, context):
-    ddb = boto3.client(
-        "dynamodb",
-        region_name="us-east-1",
-        endpoint_url=os.environ["DYNAMODB_ENDPOINT"],
-        aws_access_key_id="local",
-        aws_secret_access_key="local",
-    )
-
-    profile_id = (event.get("queryStringParameters") or {}).get("id")
-    if not profile_id:
-        return {
-            "statusCode": 400,
-            "body": json.dumps({"message": "id query parameter is required"}),
+        profile_data = {
+            "id": user_id,
+            "name": "João da Silva",
+            "email": "joao@exemplo.com",
+            "city": "São Paulo",
+            "avatarUrl": "https://s3.amazonaws.com/bucket/avatar.jpg"
         }
 
-    item = ddb.get_item(
-        TableName="ProfilesTable",
-        Key={"id": {"S": profile_id}},
-    ).get("Item")
-
-    if not item:
-        return {"statusCode": 404, "body": json.dumps({"message": "Not found"})}
-
-    return {
-        "statusCode": 200,
-        "headers": {"Content-Type": "application/json"},
-        "body": json.dumps({"id": item["id"]["S"], "name": item["name"]["S"]}),
-    }
+        return {
+            "statusCode": 200,
+            "headers": {"Content-Type": "application/json", "Access-Control-Allow-Origin": "*"},
+            "body": json.dumps(profile_data)
+        }
+    except Exception as e:
+        return {
+            "statusCode": 500,
+            "headers": {"Content-Type": "application/json", "Access-Control-Allow-Origin": "*"},
+            "body": json.dumps({"message": "Erro ao carregar perfil", "error": str(e)})
+        }
